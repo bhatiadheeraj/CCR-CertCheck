@@ -20,6 +20,6 @@ x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, certificate)
 expire_date = x509.get_notAfter()
 datetimeformat = '%Y-%m-%d %H:%M:%S'
 cert_status = datetime.strptime(expire_date.decode('ascii'), '%Y%m%d%H%M%SZ')
-print(cert_status)
+print("Expiry date for google.com is "+str(cert_status))
 
 
