@@ -38,4 +38,4 @@ for line in run_command(command):
 tree = ET.parse('test.xml')
 root = tree.getroot()
 for item in root.findall("hostname"):
-    tree.dump(item)
+    print(tree.dump(item))
