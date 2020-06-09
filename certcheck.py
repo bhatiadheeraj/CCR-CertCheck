@@ -37,6 +37,6 @@ command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
 run_command(command)
 
 tree = ET.parse('test.xml')
-root = ElementTree.parse("fruits.xml").getroot()
+root = tree.getroot()
 for name in root.iter("hostname"):
     ElementTree.dump(name)
