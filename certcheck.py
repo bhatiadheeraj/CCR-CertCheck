@@ -3,6 +3,7 @@ import socket
 import subprocess
 import xml.etree.ElementTree as ET
 import OpenSSL
+from bs4 import BeautifulSoup
 from subprocess import Popen, PIPE
 from datetime import datetime
 
@@ -32,10 +33,7 @@ def run_command(command):
     return iter(p.stdout.readline, b'')
 
 command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
-for line in run_command(command):
-        print(line)
+run_command(command)
 
-tree = ET.parse('test.xml')
-root = tree.getroot()
-for item in root.findall("hostname"):
-    print(tree.dump(item))
+soup = BeautifulSoup('test.xml')
+print(soup.find('text').string)
