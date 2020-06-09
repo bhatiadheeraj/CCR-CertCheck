@@ -31,5 +31,6 @@ def run_command(command):
                          stderr=subprocess.STDOUT)
     return iter(p.stdout.readline, b'')
 
-command = 'nmap -p 443 128.205.40.0/23'.split()
-run_command(command)
+command = 'nmap -oX -p 443 128.205.40.0/23'.split()
+for line in run_command(command):
+        print(line)
