@@ -36,6 +36,5 @@ run_command(command)
 
 tree = ET.parse('test.xml')
 root = tree.getroot()
-elts = root.findall('.//*[@key="hostname"]')
-for e in elts:
-    print(e.text)
+for item in root.findall("hostname"):
+    ElementTree.dump(item)
