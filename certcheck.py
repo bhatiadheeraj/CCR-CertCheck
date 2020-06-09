@@ -1,6 +1,9 @@
 import ssl
 import socket
+import subprocess
+
 import OpenSSL
+from subprocess import Popen, PIPE
 from datetime import datetime
 
 
@@ -22,4 +25,12 @@ datetimeformat = '%Y-%m-%d %H:%M:%S'
 cert_status = datetime.strptime(expire_date.decode('ascii'), '%Y%m%d%H%M%SZ')
 print("Expiry date for google.com is "+str(cert_status))
 
+def run_command(command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    return iter(p.stdout.readline, b'')
 
+command = 'nmap -p 443 128.205.40.0/23'.split()
+for line in run_command(command):
+        print(line)
