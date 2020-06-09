@@ -32,5 +32,4 @@ def run_command(command):
     return iter(p.stdout.readline, b'')
 
 command = 'nmap -p 443 128.205.40.0/23'.split()
-for line in run_command(command):
-        print(line)
+run_command(command)
