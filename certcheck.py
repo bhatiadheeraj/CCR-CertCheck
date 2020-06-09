@@ -1,7 +1,7 @@
 import ssl
 import socket
 import subprocess
-
+import xml.etree.ElementTree as ET
 import OpenSSL
 from subprocess import Popen, PIPE
 from datetime import datetime
@@ -34,3 +34,8 @@ def run_command(command):
 command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
 for line in run_command(command):
         print(line)
+
+tree = ET.parse('test.xml')
+root = tree.getroot()
+for item in root.findall("hostname"):
+    tree.dump(item)
