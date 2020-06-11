@@ -39,4 +39,7 @@ tree = ET.parse('test.xml')
 root = tree.getroot()
 for name in root.iter("hostname"):
     ElementTree.dump(name).text
-
+for country in root.findall('hostnames'):
+    hostname = country.find('hostname').text
+    name = country.get('state')
+    print(hostname, state)
