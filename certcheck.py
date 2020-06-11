@@ -38,4 +38,4 @@ run_command(command)
 tree = ET.parse('test.xml')
 root = tree.getroot()
 for name in root.iter("hostname"):
-    ElementTree.dump(name['name'])
+    ElementTree.dump(name)
