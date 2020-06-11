@@ -3,8 +3,8 @@ import socket
 import subprocess
 import xml.etree.ElementTree as ET
 from xml.etree import ElementTree
-
 import OpenSSL
+import xmltodict, json
 from subprocess import Popen, PIPE
 from datetime import datetime
 
@@ -40,3 +40,7 @@ tree = ET.parse('test.xml')
 root = tree.getroot()
 for name in root.iter("hostname"):
     ElementTree.dump(name)
+
+o = xmltodict.parse('test.xml')
+json_output = json.dumps(o)
+print(json_output)
