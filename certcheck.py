@@ -6,6 +6,7 @@ from xml.etree import ElementTree
 import OpenSSL
 from subprocess import Popen, PIPE
 from datetime import datetime
+from xml.dom import minidom
 
 
 def get_certificate(host, port=443, timeout=10):
@@ -35,7 +36,14 @@ def run_command(command):
 command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
 run_command(command)
 
-tree = ET.parse('test.xml')
-root = tree.getroot()
-for name in root.iter("hostname"):
-    ElementTree.dump(name)
+# tree = ET.parse('test.xml')
+# root = tree.getroot()
+# for name in root.iter("hostname"):
+#     ElementTree.dump(name)
+
+mydoc = minidom.parse('test.xml')
+items = mydoc.getElementsByTagName('nmaprun')
+
+print('\nAll attributes:')
+for elem in items:
+    print(elem.firstChild.data)
