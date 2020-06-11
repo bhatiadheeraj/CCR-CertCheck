@@ -4,7 +4,6 @@ import subprocess
 import xml.etree.ElementTree as ET
 from xml.etree import ElementTree
 import OpenSSL
-import xmltodict, json
 from subprocess import Popen, PIPE
 from datetime import datetime
 
