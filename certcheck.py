@@ -40,7 +40,7 @@ root = tree.getroot()
 for name in root.iter("hostname"):
     ElementTree.dump(name)
 
-for country in root.findall('hostnames'):
+for country in root.findall('host'):
     hostname = country.find('hostname').text
     state = country.get('state')
     print("hostname is"+str(hostname)+","+str(state))
