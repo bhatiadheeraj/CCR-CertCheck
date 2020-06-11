@@ -43,4 +43,4 @@ for name in root.iter("hostname"):
 for country in root.findall('hostnames'):
     hostname = country.find('hostname').text
     state = country.get('state')
-    print(hostname, state)
+    print("hostname is"+str(hostname)+","+str(state))
