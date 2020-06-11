@@ -38,10 +38,5 @@ run_command(command)
 tree = ET.parse('test.xml')
 root = tree.getroot()
 for name in root.iter("hostname"):
-    with open("New_Database.xml", "w") as f:
-        f.write(str(ElementTree.dump(name)))
-
-# for country in root.findall('host'):
-#     hostname = country.find('hostname')
-#     state = country.get('state')
-#     print("hostname is"+str(hostname)+","+str(state))
+    a = ElementTree.dump(name)
+    print(a)
