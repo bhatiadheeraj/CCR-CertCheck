@@ -39,7 +39,7 @@ tree = ET.parse('test.xml')
 root = tree.getroot()
 for name in root.iter("hostname"):
     with open("New_Database.xml", "w") as f:
-        f.write(ElementTree.dump(name))
+        f.write(str(ElementTree.dump(name)))
 
 # for country in root.findall('host'):
 #     hostname = country.find('hostname')
