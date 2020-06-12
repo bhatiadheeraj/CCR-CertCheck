@@ -20,12 +20,13 @@ def get_certificate(host, port=443, timeout=10):
         sock.close()
     return ssl.DER_cert_to_PEM_cert(der_cert)
 
-certificate = get_certificate('google.com')
-x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, certificate)
-expire_date = x509.get_notAfter()
-datetimeformat = '%Y-%m-%d %H:%M:%S'
-cert_status = datetime.strptime(expire_date.decode('ascii'), '%Y%m%d%H%M%SZ')
-print("Expiry date for google.com is "+str(cert_status))
+def analyze_cert(url):
+    certificate = get_certificate(url)
+    x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, certificate)
+    expire_date = x509.get_notAfter()
+    datetimeformat = '%Y-%m-%d %H:%M:%S'
+    cert_status = datetime.strptime(expire_date.decode('ascii'), '%Y%m%d%H%M%SZ')
+    return "Expiry date for "+str(url)+" is "+str(cert_status)
 
 def run_command(command):
     p = subprocess.Popen(command,
@@ -36,14 +37,11 @@ def run_command(command):
 command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
 run_command(command)
 
-# tree = ET.parse('test.xml')
-# root = tree.getroot()
-# for name in root.iter("hostname"):
-#     ElementTree.dump(name)
-
 mydoc = minidom.parse('test.xml')
-items = mydoc.getElementsByTagName('nmaprun')
+
+items = mydoc.getElementsByTagName('hostname')
 
 print('\nAll attributes:')
 for elem in items:
-    print(elem.firstChild.data)
+    print(elem.attributes['name'].value)
+    analyze_cert(elem.attributes['name'].value)
