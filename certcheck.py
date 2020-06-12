@@ -45,6 +45,12 @@ hosts = root.findall('host')    # find all elements named ‘host’
 
 for hostname in root.iter('hostname'):
     print(hostname.attrib['name'])
+    try:
+        analyze_cert(str(hostname.attrib['name']))
+    except Exception as ex:
+        print("Exception raised"+str(ex))
+    finally:
+        print("Completed Scanning")
 
 remove_file = 'rm test.xml'.split()
 run_command(remove_file)
