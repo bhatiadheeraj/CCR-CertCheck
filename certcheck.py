@@ -1,6 +1,7 @@
 import ssl
 import socket
 import subprocess
+import xml
 import xml.etree.ElementTree as ET
 from xml.etree import ElementTree
 import OpenSSL
@@ -37,16 +38,21 @@ def run_command(command):
 command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
 run_command(command)
 
+
 mydoc = minidom.parse('test.xml')
 items = mydoc.getElementsByTagName('hostname')
 print('\nAll attributes:')
 for elem in items:
-    print(elem.attributes['name'].value)
-    # try:
-    #     analyze_cert(elem.attributes['name'].value)
+        try:
+            print(elem.attributes['name'].value)
+        except xml.parsers.expat.ExpatError as ex:
+            print(ex)
+            continue
+        finally:
+            print("loop finish")
+    # try:  #     analyze_cert(elem.attributes['name'].value)
     # except Exception as e:
     #     print('Failed to check: ' + str(e))
-
 remove_file = 'rm test.xml'.split()
 run_command(remove_file)
 
