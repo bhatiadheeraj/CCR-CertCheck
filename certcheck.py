@@ -42,37 +42,18 @@ def run_command(command):
                          stderr=subprocess.STDOUT)
     return iter(p.stdout.readline, b'')
 
-command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
-run_command(command)
-
-tree = ET.parse('test.xml')    # read in the xml to a variable called tree
-root = tree.getroot()    # assign the root element to a variable called root
-hosts = root.findall('host')    # find all elements named ‘host’
-
-for hostname in root.iter('hostname'):
-    print(hostname.attrib['name'])
-    try:
-        get_certificate(hostname.attrib['name'],443)
-    except Exception as ex:
-        print("Exception raised"+str(ex))
-    finally:
-        print("Completed Scanning")
-
-remove_file = 'rm test.xml'.split()
-run_command(remove_file)
 
 HostInfo = namedtuple(field_names='cert hostname peername', typename='HostInfo')
+
 
 def get_certificate(hostname, port):
     hostname_idna = idna.encode(hostname)
     sock = socket()
-
     sock.connect((hostname, port))
     peername = sock.getpeername()
-    ctx = SSL.Context(SSL.SSLv23_METHOD) # most compatible
+    ctx = SSL.Context(SSL.SSLv23_METHOD)  # most compatible
     ctx.check_hostname = False
     ctx.verify_mode = SSL.VERIFY_NONE
-
     sock_ssl = SSL.Connection(ctx, sock)
     sock_ssl.set_connect_state()
     sock_ssl.set_tlsext_host_name(hostname_idna)
@@ -81,5 +62,39 @@ def get_certificate(hostname, port):
     crypto_cert = cert.to_cryptography()
     sock_ssl.close()
     sock.close()
+    return cert.get_notAfter()
 
-    return HostInfo(cert=crypto_cert, peername=peername, hostname=hostname)
+
+def verify_cert(cert, hostname):
+    # verify notAfter/notBefore, CA trusted, servername/sni/hostname
+    cert.has_expired()
+    # service_identity.pyopenssl.verify_hostname(client_ssl, hostname)
+    # issuer
+
+
+def check_it_out(hostname, port):
+    hostinfo = get_certificate(hostname, port)
+    print_basic_info(hostinfo)
+
+
+def print_basic_info(hostinfo):
+    # print(s)
+    return hostinfo.cert.not_valid_after
+
+if __name__ == '__main__':
+    command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
+    run_command(command)
+
+    tree = ET.parse('test.xml')    # read in the xml to a variable called tree
+    root = tree.getroot()    # assign the root element to a variable called root
+    hosts = root.findall('host')    # find all elements named ‘host’
+
+    for hostname in root.iter('hostname'):
+        print(hostname.attrib['name'])
+        try:
+            check_it_out(hostname.attrib['name'],443)
+        except Exception as ex:
+            print(ex)
+
+    remove_file = 'rm test.xml'.split()
+    run_command(remove_file)
