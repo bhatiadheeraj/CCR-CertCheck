@@ -44,4 +44,7 @@ items = mydoc.getElementsByTagName('hostname')
 print('\nAll attributes:')
 for elem in items:
     print(elem.attributes['name'].value)
-    analyze_cert(elem.attributes['name'].value)
+    try:
+        analyze_cert(elem.attributes['name'].value)
+    except:
+        print("Something went wrong")
