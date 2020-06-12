@@ -38,21 +38,13 @@ def run_command(command):
 command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
 run_command(command)
 
+tree = ET.parse('test.xml')    # read in the xml to a variable called tree
+root = tree.getroot()    # assign the root element to a variable called root
+hosts = root.findall('host')    # find all elements named ‘host’
 
-mydoc = minidom.parse('test.xml')
-items = mydoc.getElementsByTagName('hostname')
-print('\nAll attributes:')
-for elem in items:
-        try:
-            print(elem.attributes['name'].value)
-        except xml.parsers.expat.ExpatError as ex:
-            print(ex)
-            continue
-        finally:
-            print("loop finish")
-    # try:  #     analyze_cert(elem.attributes['name'].value)
-    # except Exception as e:
-    #     print('Failed to check: ' + str(e))
+for hostname in root.iter('hostname'):
+    print(hostname.attrib['name'])
+
 remove_file = 'rm test.xml'.split()
 run_command(remove_file)
 
