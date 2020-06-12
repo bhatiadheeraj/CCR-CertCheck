@@ -11,7 +11,7 @@ from datetime import datetime
 from xml.dom import minidom
 
 
-def get_certificate(host, port=443, timeout=10):
+def get_certificate(host, port=443, timeout=4):
     context = ssl.create_default_context()
     conn = socket.create_connection((host, port))
     sock = context.wrap_socket(conn, server_hostname=host)
