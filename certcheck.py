@@ -46,5 +46,5 @@ for elem in items:
     print(elem.attributes['name'].value)
     try:
         analyze_cert(elem.attributes['name'].value)
-    except:
-        print("Something went wrong")
+    except Exception as e:
+        print('Failed to check: ' + str(e))
