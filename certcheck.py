@@ -13,7 +13,7 @@ from OpenSSL import SSL
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 import idna
-from tqdm
+import tqdm
 from socket import socket
 from collections import namedtuple
 
