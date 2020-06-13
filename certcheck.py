@@ -17,6 +17,8 @@ import idna
 from socket import socket
 from collections import namedtuple
 
+from urllib3.connectionpool import xrange
+
 
 def get_certificate(host, port=443, timeout=4):
     context = ssl.create_default_context()
@@ -153,13 +155,30 @@ if __name__ == '__main__':
                 host_expiry[str(date.date())] = x
         except Exception as ex:
             pass
-    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
-        try:
-            results = e.map(check, hostnames_data)
-        except Exception as ex:
-            pass
 
-    for(k,v) in sorted(host_expiry.items()):
-        print(k,v)
-    remove_file = 'rm test.xml'.split()
-    run_command(remove_file)
+
+    import time
+    import sys
+
+    toolbar_width = 40
+    # setup toolbar
+    sys.stdout.write("[%s]" % (" " * toolbar_width))
+    sys.stdout.flush()
+    sys.stdout.write("\b" * (toolbar_width + 1))  # return to start of line, after '['
+
+    for i in xrange(toolbar_width):
+        time.sleep(0.1)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
+            try:
+                results = e.map(check, hostnames_data)
+            except Exception as ex:
+                pass
+
+        for(k,v) in sorted(host_expiry.items()):
+            print(k,v)
+        remove_file = 'rm test.xml'.split()
+        run_command(remove_file)
+        sys.stdout.write("-")
+        sys.stdout.flush()
+sys.stdout.write("]\n")
