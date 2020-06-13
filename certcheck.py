@@ -41,6 +41,7 @@ def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
+    p.wait()
     return iter(p.stdout.readline, b'')
 
 HostInfo = namedtuple(field_names='cert hostname peername', typename='HostInfo')
