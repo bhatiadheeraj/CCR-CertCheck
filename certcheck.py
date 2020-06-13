@@ -104,30 +104,33 @@ def get_issuer(cert):
 
 
 def print_basic_info(hostinfo):
-    s = '''» {hostname} « … {peername}
-    \tcommonName: {commonname}
-    \tSAN: {SAN}
-    \tissuer: {issuer}
-    \tnotBefore: {notbefore}
-    \tnotAfter:  {notafter}
-    '''.format(
-            hostname=hostinfo.hostname,
-            peername=hostinfo.peername,
-            commonname=get_common_name(hostinfo.cert),
-            SAN=get_alt_names(hostinfo.cert),
-            issuer=get_issuer(hostinfo.cert),
-            notbefore=hostinfo.cert.not_valid_before,
-            notafter=hostinfo.cert.not_valid_after
-    )
+    # s = '''» {hostname} « … {peername}
+    # \tcommonName: {commonname}
+    # \tSAN: {SAN}
+    # \tissuer: {issuer}
+    # \tnotBefore: {notbefore}
+    # \tnotAfter:  {notafter}
+    # '''.format(
+    #         hostname=hostinfo.hostname,
+    #         peername=hostinfo.peername,
+    #         commonname=get_common_name(hostinfo.cert),
+    #         SAN=get_alt_names(hostinfo.cert),
+    #         issuer=get_issuer(hostinfo.cert),
+    #         notbefore=hostinfo.cert.not_valid_before,
+    #         notafter=hostinfo.cert.not_valid_after
+    # )
     # print(s)
-    print(hostinfo.cert.not_valid_after)
+    return hostinfo.cert.not_valid_after
+
 
 
 def check_it_out(hostname, port):
     hostinfo = get_certificate(hostname, port)
     print_basic_info(hostinfo)
+    return print_basic_info(hostinfo)
 
 
+import concurrent.futures
 if __name__ == '__main__':
     command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
     run_command(command)
@@ -136,12 +139,29 @@ if __name__ == '__main__':
     root = tree.getroot()    # assign the root element to a variable called root
     hosts = root.findall('host')    # find all elements named ‘host’
 
+    hostnames_data = []
+    host_expiry = {}
     for hostname in root.iter('hostname'):
         print(hostname.attrib['name'])
-        try:
-            check_it_out(hostname.attrib['name'],443)
-        except Exception as ex:
-            print(ex)
+        hostnames_data.append(hostname.attrib['name'])
 
-    remove_file = 'rm test.xml'.split()
-    run_command(remove_file)
+    print(hostnames_data)
+    def check(x):
+        try:
+                date = check_it_out(x, 443)
+                host_expiry[x] = date
+        except Exception as ex:
+            pass
+    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
+        try:
+            results = e.map(check, hostnames_data)
+            for result in results:
+                print(result)
+        except Exception as ex:
+            pass
+
+    for(k,v) in host_expiry.items():
+        print(k,v)
+
+    # remove_file = 'rm test.xml'.split()
+    # run_command(remove_file)
