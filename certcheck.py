@@ -13,7 +13,7 @@ from OpenSSL import SSL
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 import idna
-import tqdm
+from tqdm import tqdm
 from socket import socket
 from collections import namedtuple
 
@@ -64,7 +64,7 @@ def verify_cert(cert, hostname):
 def get_certificate(hostname, port):
     hostname_idna = idna.encode(hostname)
     sock = socket()
-
+    sock.settimeout(2)
     sock.connect((hostname, port))
     peername = sock.getpeername()
     ctx = SSL.Context(SSL.SSLv23_METHOD) # most compatible
@@ -133,35 +133,34 @@ def check_it_out(hostname, port):
 
 import concurrent.futures
 if __name__ == '__main__':
-    for i in tqdm.tqdm(range(1000)):
-        print("Working:")
+    print("Working:")
 
-        command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
-        run_command(command)
+    command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
+    run_command(command)
 
-        tree = ET.parse('test.xml')    # read in the xml to a variable called tree
-        root = tree.getroot()    # assign the root element to a variable called root
-        hosts = root.findall('host')    # find all elements named ‘host’
+    tree = ET.parse('test.xml')    # read in the xml to a variable called tree
+    root = tree.getroot()    # assign the root element to a variable called root
+    hosts = root.findall('host')    # find all elements named ‘host’
 
-        hostnames_data = []
-        host_expiry = {}
-        for hostname in root.iter('hostname'):
-            hostnames_data.append(hostname.attrib['name'])
+    hostnames_data = []
+    host_expiry = {}
+    for hostname in root.iter('hostname'):
+        hostnames_data.append(hostname.attrib['name'])
 
-        def check(x):
-            try:
-                    date = check_it_out(x, 443)
-                    host_expiry[str(date.date())] = x
-            except Exception as ex:
-                pass
+    def check(x):
+        try:
+                date = check_it_out(x, 443)
+                host_expiry[str(date.date())] = x
+        except Exception as ex:
+            pass
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
-            try:
-                results = e.map(check, hostnames_data)
-            except Exception as ex:
-                pass
+    with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
+        try:
+            results = e.map(check, hostnames_data)
+        except Exception as ex:
+            pass
 
-        for(k,v) in sorted(host_expiry.items()):
-            print(k,v)
-        remove_file = 'rm test.xml'.split()
-        run_command(remove_file)
+    for(k,v) in sorted(host_expiry.items()):
+        print(k,v)
+    remove_file = 'rm test.xml'.split()
+    run_command(remove_file)
