@@ -149,7 +149,7 @@ if __name__ == '__main__':
     def check(x):
         try:
                 date = check_it_out(x, 443)
-                host_expiry[date.date()] = x
+                host_expiry[str(date.date())] = x
         except Exception as ex:
             pass
     with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
@@ -158,8 +158,7 @@ if __name__ == '__main__':
         except Exception as ex:
             pass
 
-    sorted(host_expiry.items(), reverse=True)
-    for(k,v) in host_expiry.items():
+    for(k,v) in sorted(host_expiry.items()):
         print(k,v)
     remove_file = 'rm test.xml'.split()
     run_command(remove_file)
