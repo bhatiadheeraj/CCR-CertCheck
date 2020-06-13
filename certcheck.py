@@ -132,6 +132,8 @@ def check_it_out(hostname, port):
 
 import concurrent.futures
 if __name__ == '__main__':
+    print("Working:")
+
     command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
     run_command(command)
 
@@ -156,9 +158,8 @@ if __name__ == '__main__':
         except Exception as ex:
             pass
 
-    sorted(host_expiry, key=host_expiry.get)
+    sorted(host_expiry.items(), key=lambda p: p[1], reverse=False)
     for(k,v) in host_expiry.items():
         print(k,v)
-
     remove_file = 'rm test.xml'.split()
     run_command(remove_file)
