@@ -142,10 +142,8 @@ if __name__ == '__main__':
     hostnames_data = []
     host_expiry = {}
     for hostname in root.iter('hostname'):
-        print(hostname.attrib['name'])
         hostnames_data.append(hostname.attrib['name'])
 
-    print(hostnames_data)
     def check(x):
         try:
                 date = check_it_out(x, 443)
@@ -155,13 +153,12 @@ if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
         try:
             results = e.map(check, hostnames_data)
-            for result in results:
-                print(result)
         except Exception as ex:
             pass
 
+    sorted(host_expiry, key=host_expiry.get)
     for(k,v) in host_expiry.items():
         print(k,v)
 
-    # remove_file = 'rm test.xml'.split()
-    # run_command(remove_file)
+    remove_file = 'rm test.xml'.split()
+    run_command(remove_file)
