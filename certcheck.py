@@ -13,11 +13,9 @@ from OpenSSL import SSL
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 import idna
-
+from tqdm import tqdm
 from socket import socket
 from collections import namedtuple
-
-from urllib3.connectionpool import xrange
 
 
 def get_certificate(host, port=443, timeout=4):
@@ -135,39 +133,27 @@ def check_it_out(hostname, port):
 
 import concurrent.futures
 if __name__ == '__main__':
-    print("Working:")
+    for i in tqdm.tqdm(range(1000)):
+        print("Working:")
 
-    command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
-    run_command(command)
+        command = 'nmap -oX test.xml -p 443 128.205.40.0/23'.split()
+        run_command(command)
 
-    tree = ET.parse('test.xml')    # read in the xml to a variable called tree
-    root = tree.getroot()    # assign the root element to a variable called root
-    hosts = root.findall('host')    # find all elements named ‘host’
+        tree = ET.parse('test.xml')    # read in the xml to a variable called tree
+        root = tree.getroot()    # assign the root element to a variable called root
+        hosts = root.findall('host')    # find all elements named ‘host’
 
-    hostnames_data = []
-    host_expiry = {}
-    for hostname in root.iter('hostname'):
-        hostnames_data.append(hostname.attrib['name'])
+        hostnames_data = []
+        host_expiry = {}
+        for hostname in root.iter('hostname'):
+            hostnames_data.append(hostname.attrib['name'])
 
-    def check(x):
-        try:
-                date = check_it_out(x, 443)
-                host_expiry[str(date.date())] = x
-        except Exception as ex:
-            pass
-
-
-    import time
-    import sys
-
-    toolbar_width = 40
-    # setup toolbar
-    sys.stdout.write("[%s]" % (" " * toolbar_width))
-    sys.stdout.flush()
-    sys.stdout.write("\b" * (toolbar_width + 1))  # return to start of line, after '['
-
-    for i in xrange(toolbar_width):
-        time.sleep(0.1)
+        def check(x):
+            try:
+                    date = check_it_out(x, 443)
+                    host_expiry[str(date.date())] = x
+            except Exception as ex:
+                pass
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
             try:
@@ -179,6 +165,3 @@ if __name__ == '__main__':
             print(k,v)
         remove_file = 'rm test.xml'.split()
         run_command(remove_file)
-        sys.stdout.write("-")
-        sys.stdout.flush()
-sys.stdout.write("]\n")
