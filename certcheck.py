@@ -64,7 +64,6 @@ def verify_cert(cert, hostname):
 def get_certificate(hostname, port):
     hostname_idna = idna.encode(hostname)
     sock = socket()
-    sock.settimeout(2)
     sock.connect((hostname, port))
     peername = sock.getpeername()
     ctx = SSL.Context(SSL.SSLv23_METHOD) # most compatible
