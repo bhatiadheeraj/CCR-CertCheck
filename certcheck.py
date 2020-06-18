@@ -120,7 +120,7 @@ import concurrent.futures
 if __name__ == '__main__':
     print("Working:")
 
-    command = 'nmap -oX test.xml -p 443 128.205.11.0/24'.split()
+    command = 'nmap -oX test.xml -p 443 199.109.192.0/22'.split()
     run_command(command)
 
     tree = ET.parse('test.xml')    # read in the xml to a variable called tree
