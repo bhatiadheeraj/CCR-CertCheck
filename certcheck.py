@@ -153,12 +153,16 @@ if __name__ == '__main__':
                 host_expiry[str(date.date())] = x
         except Exception as ex:
             pass
+        finally:
+            print("Analyzing "+str(x))
+
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
         try:
             results = e.map(check, hostnames_data)
         except Exception as ex:
             pass
+
 
     for(k,v) in sorted(host_expiry.items()):
         print(k,v)
