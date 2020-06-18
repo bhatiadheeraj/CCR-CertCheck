@@ -153,7 +153,7 @@ if __name__ == '__main__':
         except Exception as ex:
             pass
         finally:
-            print("Analyzing "+str(x))
+            print("Analysis complete for "+str(x))
 
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=None) as e:
@@ -162,8 +162,10 @@ if __name__ == '__main__':
         except Exception as ex:
             pass
 
-
+    print("Results")
+    print("------------------------------------------------------------------------------")
     for(k,v) in sorted(host_expiry.items()):
         print(k,v)
+    print("------------------------------------------------------------------------------")
     remove_file = 'rm test.xml'.split()
     run_command(remove_file)
