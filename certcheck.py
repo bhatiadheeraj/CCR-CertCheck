@@ -2,18 +2,13 @@
 import ssl
 import socket
 import subprocess
-import xml
 import xml.etree.ElementTree as ET
-from xml.etree import ElementTree
 import OpenSSL
-from subprocess import Popen, PIPE
 from datetime import datetime
-from xml.dom import minidom
 from OpenSSL import SSL
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 import idna
-from tqdm import tqdm
 from socket import socket
 from collections import namedtuple
 
