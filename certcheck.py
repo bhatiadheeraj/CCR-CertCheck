@@ -41,15 +41,6 @@ def run_command(command):
 
 HostInfo = namedtuple(field_names='cert hostname peername', typename='HostInfo')
 
-HOSTS = [
-    ('damjan.softver.org.mk', 443),
-    ('expired.badssl.com', 443),
-    ('wrong.host.badssl.com', 443),
-    ('ca.ocsr.nl', 443),
-    ('faß.de', 443),
-    ('самодеј.мкд', 443),
-]
-
 def verify_cert(cert, hostname):
     # verify notAfter/notBefore, CA trusted, servername/sni/hostname
     cert.has_expired()
